@@ -52,6 +52,50 @@ int main(void) {
                         printf("Weapon: %s %s\n", rarityDic(weapons[weaponsIndex].rarity), weapons[weaponsIndex].name);
                         printf("Consumable: %d %s\n",consumables[consumablesIndex].quantity, consumables[consumablesIndex].name);
                         printf("Material: 30 %s\n", mats[matsIndex].name);
+                    } else if (strcmp(input2, "A") == 0 || strcmp(input2, "a") == 0) {
+                        char WorC[50];
+                        printf("Would you like to search for a weapon or a consumable ? W/C\n");
+                        fgets(WorC, sizeof(WorC), stdin);
+                        WorC[strcspn(WorC, "\n")] = '\0';
+                        if (strcmp(WorC, "W") == 0 || strcmp(WorC, "w") == 0) {
+                            printf("Enter the ID of the weapon you are looking for.\n");//TODO: add name search idem for consumables
+                            char input3[50];
+                            int index;
+                            fgets(input3, sizeof(input3), stdin);
+                            input3[strcspn(input3, "\n")] = '\0';
+                            if (atoi(input3) == 0) {
+                                printf("Invalid input. Please try again.\n");
+                            } else {
+                                index = findIndexWithID(0, atoi(input3), weaponsNB);
+                            }
+                            if (index == -1) {
+                                printf("Weapon not found.\n");
+                            } else {
+                                printf("Opening chests until you get the desired weapon...\n");
+                                int tries = openChestUntil(0, &index, &weaponsIndex, &consumablesIndex, &matsIndex, weaponsNB, consumablesNB);
+                                printf("First %s %s found in chest %d.\n", rarityDic(weapons[index].rarity), weapons[index].name, tries);
+                            }
+                        } else if (strcmp(WorC, "C") == 0 || strcmp(WorC, "c") == 0) {
+                            printf("Enter the ID of the consumable you are looking for.\n");
+                            char input3[50];
+                            int index;
+                            fgets(input3, sizeof(input3), stdin);
+                            input3[strcspn(input3, "\n")] = '\0';
+                            if (atoi(input3) == 0) {
+                                printf("Invalid input. Please try again.\n");
+                            } else {
+                                index = findIndexWithID(1, atoi(input3), weaponsNB);
+                            }
+                            if (index == -1) {
+                                printf("Consumable not found.\n");
+                            } else {
+                                printf("Opening chests until you get the desired consumable...\n");
+                                int tries = openChestUntil(0, &index, &weaponsIndex, &consumablesIndex, &matsIndex, weaponsNB, consumablesNB);
+                                printf("First %s found in chest %d.\n", consumables[index].name, tries);
+                            }
+                        } else {
+                            printf("Invalid input. Please try again.\n");
+                        }
                     } else if (strcmp(input2, "X") == 0 || strcmp(input2, "x") == 0) {
                         printf("How many chests would you like to open ?\n");
                         char input3[64];
@@ -124,16 +168,7 @@ int main(void) {
                     } else if (strcmp(input2, "H") == 0 || strcmp(input2, "h") == 0) {
                         int exitH = 0;
                         while (exitH == 0) {
-                            printf("====================================\n");
-                            printf("There are currently %d weapons and %d consumables.\n\n", weaponsNB, consumablesNB);
-                            printf("Current weapons file : %s\n", filenameW);
-                            printf("Current consumables file : %s\n", filenameC);
-                            printf("====================================\n");
-                            printf("[H] Hardfill from selected files\n"
-                                   "[W] Change weapons filename\n"
-                                   "[C] Change consumables filename\n"
-                                   "[F] Return to the settings menu\n");
-                            printf("====================================\n");
+                            displayHardfillMenu(weaponsNB, consumablesNB, filenameW, filenameC);
                             char input4[5];
                             fgets(input4, sizeof(input4), stdin);
                             input4[strcspn(input4, "\n")] = '\0';

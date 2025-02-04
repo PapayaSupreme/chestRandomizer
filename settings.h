@@ -64,6 +64,17 @@ void displaySettingsMenu();
  * @brief Displays the chest menu
  */
 void displayChestMenu();
+
+/**
+ * @brief Displays the hardfill menu
+ *
+ * @param weaponsNB number of weapons
+ * @param consumablesNB number of consumables
+ * @param filenameW filename for weapons
+ * @param filenameC filename for consumables
+ */
+void displayHardfillMenu(int weaponsNB, int consumablesNB, const char *filenameW, const char *filenameC);
+
 /**
  * @brief Associates each rarity number with its name
  *
@@ -169,15 +180,26 @@ void openChest(int rarity, int *weaponsIndex, int *consumablesIndex, int *matsIn
 /**
  * @brief Finds the value in the itemDrops array
  *
- * @param itemDrops array of item drops
+ * @param T array of item drops
  * @param itemsNB number of items
- * @param randomValue random value
+ * @param val random value
  *
  * @return the index of the item
  *
  * @note This is a binary search
  */
-int findValue(int *itemDrops, int itemsNB, int randomValue);
+int findValue(int *T, int itemsNB, int val);
+
+/**
+ * @brief Finds the index of the item with the provided ID
+ *
+ * @param WorC 0 for weapon, 1 for consumable
+ * @param id the ID to find
+ * @param size the number of items
+ *
+ * @return the index of the item
+ */
+int findIndexWithID(int WorC, int id, int size); //TODO NOT EFFICIENT
 
 /**
  * @brief Fills the weapons array thanks to a provided file
@@ -224,4 +246,19 @@ void openXChests(int X, int *weaponsIndex, int *consumablesIndex, int *matsIndex
  * @param matCount array of mat count
  */
 void chestToCSV(int *weaponCount, int weaponsNB, int *consumableCount, int consumablesNB, int *matCount);
+
+/**
+ * @brief Opens chests until a certain condition is met
+ *
+ * @param WorC W for weapon, C for consumable
+ * @param index index of the item
+ * @param weaponsIndex to store the index of the weapon obtained
+ * @param consumablesIndex to store the index of the consumable obtained
+ * @param matsIndex to store the index of the mats obtained
+ * @param weaponsNB number of weapons
+ * @param consumablesNB number of consumables
+ *
+ * @note The 3 pointers values will be modified
+ */
+int openChestUntil(int WorC, int *index, int *weaponsIndex, int *consumablesIndex, int *matsIndex, int weaponsNB, int consumablesNB);
 #endif //SETTINGS_H

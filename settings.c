@@ -49,9 +49,22 @@ void displayChestMenu(){
     printf("           CHEST  MENU              \n");
     printf("====================================\n");
     printf("  [E] Open 1 chest\n");
-    printf("  [R] Open X chests\n");
+    printf("  [X] Open X chests\n");
     printf("  [A] Open chests UNTIL\n");
     printf("  [F] Return to Main Menu\n");
+}
+
+void displayHardfillMenu(int weaponsNB, int consumablesNB, const char *filenameW, const char *filenameC) {
+    printf("====================================\n");
+    printf("There are currently %d weapons and %d consumables.\n\n", weaponsNB, consumablesNB);
+    printf("Current weapons file : %s\n", filenameW);
+    printf("Current consumables file : %s\n", filenameC);
+    printf("====================================\n");
+    printf("[H] Hardfill from selected files\n"
+           "[W] Change weapons filename\n"
+           "[C] Change consumables filename\n"
+           "[F] Return to the settings menu\n");
+    printf("====================================\n");
 }
 
 const char* rarityDic(int rarity) {
@@ -487,11 +500,11 @@ void openChest(int rarity, int *weaponsIndex, int *consumablesIndex, int *matsIn
     }
 }
 
-int findValue(int *itemDrops, int itemsNB, int randomValue) {
+int findValue(int *T, int itemsNB, int val) {
     int left = 0, right = itemsNB - 1;
     while (left < right) {
         int mid = (left + right) / 2;
-        if (randomValue <= itemDrops[mid])
+        if (val <= T[mid])
             right = mid;
         else
             left = mid + 1;
@@ -499,6 +512,22 @@ int findValue(int *itemDrops, int itemsNB, int randomValue) {
     return left;  // The selected weapon index
 }
 
+int findIndexWithID(int WorC, int id, int size) {
+    if (WorC == 0) {
+        for (int i = 0; i < size; i++) {
+            if (weapons[i].id == id) {
+                return i;
+            }
+        }
+    } else {
+        for (int i = 0; i < size; i++) {
+            if (consumables[i].id == id) {
+                return i;
+            }
+        }
+    }
+    return -1;
+}
 int hardFillWeapons(const char *filename, int currID, int size) {
     FILE *file = fopen(filename, "r");
     printf("Opening file: %s\n", filename);
@@ -610,4 +639,28 @@ void chestToCSV(int *weaponCount, int weaponsNB, int *consumableCount, int consu
 
     fclose(file);
     printf("Loot results saved to loot_results.csv\n");
+}
+
+int openChestUntil(int WorC, int *index, int *weaponsIndex, int *consumablesIndex, int *matsIndex, int weaponsNB, int consumablesNB) {
+    //we open chests until we get the desired item
+    int found = 0;
+    int tries = 0;
+    if (WorC == 0) {
+        while (found == 0) {
+            openChest(0, weaponsIndex, consumablesIndex, matsIndex, weaponsNB, consumablesNB);
+            if (*weaponsIndex == *index) {
+                found = 1;
+            }
+            tries++;
+        }
+    } else {
+        while (found == 0) {
+            openChest(0, weaponsIndex, consumablesIndex, matsIndex, weaponsNB, consumablesNB);
+            if (*consumablesIndex == *index) {
+                found = 1;
+            }
+            tries++;
+        }
+    }
+    return tries;
 }
