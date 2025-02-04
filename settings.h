@@ -115,7 +115,7 @@ int weaponCreationFoolproof(int currsize, int currID);
  * @param name name
  * @return closest available ID
  */
-int consumableCreation(int currsize, int currID, int dropchance, int number, int rarity, char name[]);
+int consumableCreation(int currsize, int currID, float dropchance, int number, int rarity, char name[]);
 
 /**
  * @brief Creates a consumable with user input
@@ -178,4 +178,26 @@ void openChest(int rarity, int *weaponsIndex, int *consumablesIndex, int *matsIn
  * @note This is a binary search
  */
 int findValue(int *itemDrops, int itemsNB, int randomValue);
+
+/**
+ * @brief Fills the weapons array thanks to a provided file
+ *
+ * @param filename the file to read
+ * @param currID closest ID available
+ * @param size number of weapons before hardfill
+ *
+ * @return closest available ID
+ */
+int hardFillWeapons(const char *filename, int currID, int size);
+
+/**
+ * @brief Fills the consumables array thanks to a provided file
+ *
+ * @param filename the file to read
+ * @param currID closest ID available
+ * @param size number of consumables before hardfill
+ *
+ * @return closest available ID
+ */
+int hardFillConsumables(const char *filename, int currID, int size);
 #endif //SETTINGS_H

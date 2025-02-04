@@ -36,7 +36,8 @@ void displaySettingsMenu() {
     printf("          SETTINGS MENU             \n");
     printf("====================================\n");
     printf("  [W] Add a weapon\n");
-    printf("  [C] Add a Consumable\n");
+    printf("  [C] Add a consumable\n");
+    printf("  [H] Hard fill items\n");
     printf("  [S] See added weapons\n");
     printf("  [M] See added consumables\n");
     printf("  [R] Remove an item\n");
@@ -203,7 +204,7 @@ int weaponCreationFoolproof(int currsize, int currID) {
     return weaponCreation(currsize, currID, name, type, rarity, dropchance);
 }
 
-int consumableCreation(int currsize, int currID, int dropchance, int number, int rarity, char name[]) {
+int consumableCreation(int currsize, int currID, float dropchance, int number, int rarity, char name[]) {
     consumables[currsize].id = currID;
     int dropchanceINT = dropchance * 100;
     consumables[currsize].dropchance = dropchanceINT;
@@ -214,7 +215,7 @@ int consumableCreation(int currsize, int currID, int dropchance, int number, int
            "Name: %s\n"
            "Drop chance: %.2f%%\n"
            "Rarity: %s\n"
-           "Quantity: %d\n", consumables[currsize].id, consumables[currsize].name, consumables[currsize].dropchance,
+           "Quantity: %d\n", consumables[currsize].id, consumables[currsize].name, dropchance,
            rarityDic(consumables[currsize].rarity), consumables[currsize].quantity);
     return ++currID;
 }
@@ -498,4 +499,64 @@ int findValue(int *itemDrops, int itemsNB, int randomValue) {
             left = mid + 1;
     }
     return left;  // The selected weapon index
+}
+
+int hardFillWeapons(const char *filename, int currID, int size) {
+    FILE *file = fopen(filename, "r");
+    printf("Opening file: %s\n", filename);
+    if (file == NULL) {
+        printf("Error: Cannot open file %s\n", filename);
+        return currID;
+    }
+    int weaponsNB = 0;
+    float dropchancetemp;
+    char name[30];
+    while (weaponsNB < MAX_WEAPONS &&
+           fscanf(file, "%29s %f %d %d",
+                  name,
+                  &dropchancetemp,
+                  &weapons[size + weaponsNB].rarity,
+                  &weapons[size + weaponsNB].type) == 4) {
+        weapons[size + weaponsNB].dropchance = dropchancetemp * 100;            //MAYBE DO IT IN TH WHILE DIRECTLY TODO
+        weapons[size + weaponsNB].id = currID;
+        strcpy(weapons[size + weaponsNB].name, name);
+        currID++;
+        weaponsNB++;
+                  }
+    fclose(file);
+    printf("Loaded %d weapons from %s\n", weaponsNB, filename);
+    if  (weaponsNB == MAX_WEAPONS) {
+        printf("Warning: Maximum number of weapons reached.\n");
+    }
+    return currID;
+}
+
+int hardFillConsumables(const char *filename, int currID, int size) {
+    FILE *file = fopen(filename, "r");
+    printf("Opening file: %s\n", filename);
+    if (file == NULL) {
+        printf("Error: Cannot open file %s\n", filename);
+        return currID;
+    }
+    int consumablesNB = 0;
+    float dropchancetemp;
+    char name[30];
+    while (consumablesNB < MAX_CONSUMABLES &&
+           fscanf(file, "%29s %f %d %d",
+                  name,
+                  &dropchancetemp,
+                  &consumables[size + consumablesNB].rarity,
+                  &consumables[size + consumablesNB].quantity) == 4) {
+        consumables[size + consumablesNB].dropchance = dropchancetemp * 100;
+        consumables[size + consumablesNB].id = currID;
+        strcpy(consumables[size + consumablesNB].name, name);
+        currID++;
+        consumablesNB++;
+    }
+    fclose(file);
+    printf("Loaded %d consumables from %s\n", consumablesNB, filename);
+    if  (consumablesNB == MAX_CONSUMABLES) {
+        printf("Warning: Maximum number of consumables reached.\n");
+    }
+    return currID;
 }

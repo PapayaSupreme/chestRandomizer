@@ -8,6 +8,9 @@
 
 int main(void) {
     srand (time(NULL));
+    char filenameW[254] = "weapons.txt";
+    char filenameC[254] = "consumables.txt";
+    int temp;
     mats[0].id = 1;
     mats[0].dropchance = 1;
     strcpy(mats[0].name, "Wood");
@@ -71,6 +74,67 @@ int main(void) {
                         printf("Creating a weapon.\n");
                         currID = weaponCreationFoolproof(weaponsNB, currID);
                         weaponsNB++;
+                    } else if (strcmp(input2, "H") == 0 || strcmp(input2, "h") == 0) {
+                        int exitH = 0;
+                        while (exitH == 0) {
+                            printf("====================================\n");
+                            printf("There are currently %d weapons and %d consumables.\n\n", weaponsNB, consumablesNB);
+                            printf("Current weapons file : %s\n", filenameW);
+                            printf("Current consumables file : %s\n", filenameC);
+                            printf("====================================\n");
+                            printf("[W] Change weapons filename\n"
+                                   "[H] Hardfill weapons from current file\n"
+                                   "[C] Change consumables filename\n"
+                                   "[I] Hardfill consumables from current file\n"
+                                   "[F] Return to the settings menu\n");
+                            printf("====================================\n");
+                            char input4[5];
+                            fgets(input4, sizeof(input4), stdin);
+                            input4[strcspn(input4, "\n")] = '\0';
+                            if (strcmp(input4, "W") == 0 || strcmp(input4, "w") == 0) {
+                                printf("Put the text file in the same directory.\n"
+                               "Syntax is as follows:\n"
+                               "Name Dropchance Rarity Type\n"
+                               "Scar-L 0.05 4 1\n"
+                               "Rarities : 0 - Common, 1 - Uncommon, 2 - Rare, 3 - Epic, 4 - Legendary\n"
+                               "Types : 0 - Shotgun, 1 - AR, 2 - SMG, 3 - Sniper, 4 - Pistol, 5 - Explosive\n");
+                                printf("\nWhat is the name of the file ?\n");
+                                fgets(filenameW, sizeof(filenameW), stdin);
+                                filenameW[strcspn(filenameW, "\n")] = '\0';
+                                strcat(filenameW, ".txt");
+                            } else if (strcmp(input4, "H") == 0 || strcmp(input4, "h") == 0) {
+                                temp = currID;
+                                currID = hardFillWeapons(filenameW, currID, weaponsNB);
+                                if (currID == temp) {
+                                    printf("NOTE : No weapons were added. Check your in-file syntax.\n");
+                                }else {
+                                    weaponsNB += currID - temp;
+                                }
+                            } else if (strcmp(input4, "C") == 0 || strcmp(input4, "c") == 0) {
+                                printf("Put the text file in the same directory.\n"
+                               "Syntax is as follows:\n"
+                               "Name Dropchance Rarity Quantity\n"
+                               "Medkit 10 2 1\n"
+                               "Rarities : 0 - Common, 1 - Uncommon, 2 - Rare, 3 - Epic, 4 - Legendary\n");
+                                printf("\nWhat is the name of the file ?\n");
+                                fgets(filenameC, sizeof(filenameC), stdin);
+                                filenameC[strcspn(filenameC, "\n")] = '\0';
+                                strcat(filenameC, ".txt");
+                            } else if (strcmp(input4, "I") == 0 || strcmp(input4, "i") == 0) {
+                                temp = currID;
+                                currID = hardFillConsumables(filenameC, currID, consumablesNB);
+                                if (currID == temp) {
+                                    printf("NOTE : No consumables were added. Check your in-file syntax.\n");
+                                }else {
+                                    consumablesNB += currID - temp;
+                                }
+                            }else if (strcmp(input4, "F") == 0 || strcmp(input4, "f") == 0) {
+                                printf("Returning to settings menu.\n");
+                                exitH = 1;
+                            } else {
+                                printf("Invalid entry, please try again.\n");
+                            }
+                        }
                     } else if (strcmp(input2, "C") == 0 || strcmp(input2, "c") == 0) {
                         printf("Creating a consumable.\n");
                         currID = consumableCreationFoolproof(consumablesNB, currID);
