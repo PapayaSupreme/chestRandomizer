@@ -200,4 +200,28 @@ int hardFillWeapons(const char *filename, int currID, int size);
  * @return closest available ID
  */
 int hardFillConsumables(const char *filename, int currID, int size);
+
+/**
+ * @brief Opens 1000 chests and keeps track of stats
+ *
+ * @param weaponsIndex to store the index of the weapon obtained
+ * @param consumablesIndex to store the index of the consumable obtained
+ * @param matsIndex to store the index of the mats obtained
+ * @param weaponsNB number of weapons
+ * @param consumablesNB number of consumables
+ *
+ * @note The 3 pointers values will be modified
+ */
+void openXChests(int X, int *weaponsIndex, int *consumablesIndex, int *matsIndex, int weaponsNB, int consumablesNB);
+
+/**
+ * @brief Converts the chest content to a CSV file
+ *
+ * @param weaponCount array of weapon count
+ * @param weaponsNB number of weapons
+ * @param consumableCount array of consumable count
+ * @param consumablesNB number of consumables
+ * @param matCount array of mat count
+ */
+void chestToCSV(int *weaponCount, int weaponsNB, int *consumableCount, int consumablesNB, int *matCount);
 #endif //SETTINGS_H

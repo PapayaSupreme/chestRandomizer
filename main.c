@@ -23,12 +23,9 @@ int main(void) {
     int currID = 4;
     int weaponsNB = 0;
     int consumablesNB = 0;
-    int matsNB = 3;
     int exit = 0;
     int rarity = 0;//while rare chests are not implemented, always 0 so common
-    int weaponsIndex = 0;
-    int consumablesIndex = 0;
-    int matsIndex = 0;
+    int weaponsIndex, consumablesIndex, matsIndex;
     char input[5];
     while (exit == 0){
         int validentry = 0;
@@ -55,6 +52,56 @@ int main(void) {
                         printf("Weapon: %s %s\n", rarityDic(weapons[weaponsIndex].rarity), weapons[weaponsIndex].name);
                         printf("Consumable: %d %s\n",consumables[consumablesIndex].quantity, consumables[consumablesIndex].name);
                         printf("Material: 30 %s\n", mats[matsIndex].name);
+                    } else if (strcmp(input2, "X") == 0 || strcmp(input2, "x") == 0) {
+                        printf("How many chests would you like to open ?\n");
+                        char input3[64];
+                        fgets(input3, sizeof(input3), stdin);
+                        input3[strcspn(input3, "\n")] = '\0';
+                        if (atoi(input3) <= 1) {
+                            if (atoi(input3) == 1) {
+                                printf("You can just open a single chest by pressing E(noob) :P\n");
+                            }else {
+                                printf("Wrong input. Try again and enter a number.\n");
+                            }
+                        } else {
+                            int weaponCount[weaponsNB];
+                            int consumableCount[consumablesNB];
+                            int matCount[3] = {0};
+                            memset(weaponCount, 0, sizeof(weaponCount));
+                            memset(consumableCount, 0, sizeof(consumableCount));
+                            memset(matCount, 0, sizeof(matCount));
+                            const unsigned int X = atoi(input3);
+                            printf("Opening %d chests.\n", X);
+                            int printitallhere = 0;
+                            openXChests(X, weaponCount, consumableCount, matCount, weaponsNB, consumablesNB);
+                            if (X>=10) {
+                                printf("That's a lot of loot ! Would you like a CSV data file ? Y/N\n");
+                                char input4[5];
+                                fgets(input4, sizeof(input4), stdin);
+                                input4[strcspn(input4, "\n")] = '\0';
+                                if (strcmp(input4, "Y") == 0 || strcmp(input4, "y") == 0) {
+                                    chestToCSV(weaponCount, weaponsNB, consumableCount, consumablesNB, matCount);
+                                    printitallhere = 1;
+                                }
+                            }
+                            if (printitallhere == 0) {
+                                for (int i = 0; i < weaponsNB; i++) {
+                                    if (weaponCount[i] != 0) {
+                                        printf("Weapon: %s %s - %d times\n", rarityDic(weapons[i].rarity), weapons[i].name, weaponCount[i]);
+                                    }
+                                }
+                                for (int i = 0; i < consumablesNB; i++) {
+                                    if (consumableCount[i] != 0) {
+                                        printf("Consumable: %d %s - %d times\n", consumables[i].quantity, consumables[i].name, consumableCount[i]);
+                                    }
+                                }
+                                for (int i = 0; i < 3; i++) {
+                                    if (matCount[i] != 0) {
+                                        printf("Material: 30 %s - %d times\n", mats[i].name, matCount[i]);
+                                    }
+                                }
+                            }
+                        }
                     }else if (strcmp(input2, "F") == 0 || strcmp(input2, "f") == 0){
                         exitC = 1;
                         printf("Returning to the main menu.\n");
@@ -102,7 +149,7 @@ int main(void) {
                                 filenameW[strcspn(filenameW, "\n")] = '\0';
                                 strcat(filenameW, ".txt");
                             } else if (strcmp(input4, "H") == 0 || strcmp(input4, "h") == 0) {
-                                printf("DO you want to hardfill weapons or consumables ? W/C\n");
+                                printf("Do you want to hardfill weapons or consumables ? W/C\n");
                                 char input5[5];
                                 fgets(input5, sizeof(input5), stdin);
                                 input5[strcspn(input5, "\n")] = '\0';

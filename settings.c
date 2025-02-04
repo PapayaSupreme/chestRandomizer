@@ -49,7 +49,7 @@ void displayChestMenu(){
     printf("           CHEST  MENU              \n");
     printf("====================================\n");
     printf("  [E] Open 1 chest\n");
-    printf("  [R] Open 1000 chests\n");
+    printf("  [R] Open X chests\n");
     printf("  [A] Open chests UNTIL\n");
     printf("  [F] Return to Main Menu\n");
 }
@@ -455,11 +455,14 @@ int deleteItem(int type, int size) {
 void openChest(int rarity, int *weaponsIndex, int *consumablesIndex, int *matsIndex, int weaponsNB, int consumablesNB) {
     if (rarity == 0) {
         //chest will drop one weapon, one consumable and one mat
-        int weaponDrops[weaponsNB], consumableDrops[consumablesNB];
+        int *weaponDrops = malloc(weaponsNB * sizeof(int));
+        int *consumableDrops = malloc(consumablesNB * sizeof(int));
         weaponDrops[0] = weapons[0].dropchance;
-        consumableDrops[0] = consumables[0].dropchance;
         for (int i = 1;i<weaponsNB;i++) {
-            weaponDrops[i] = weapons[i-1].dropchance+weapons[i].dropchance;
+            weaponDrops[i] = weaponDrops[i-1]+weapons[i].dropchance;
+        }
+        consumableDrops[0] = consumables[0].dropchance;
+        for (int i = 1;i<consumablesNB;i++) {
             consumableDrops[i] = consumableDrops[i-1]+consumables[i].dropchance;
         }
         int weaponDrop, consumableDrop;
@@ -475,6 +478,9 @@ void openChest(int rarity, int *weaponsIndex, int *consumablesIndex, int *matsIn
         *weaponsIndex = findValue(weaponDrops, weaponsNB, weaponDrop);
         *consumablesIndex = findValue(consumableDrops, consumablesNB, consumableDrop);
         *matsIndex = (int)((double)rand() / (RAND_MAX + 1.0) * 3);
+        free(weaponDrops);
+        free(consumableDrops);
+
     }
     else {
         printf("RARE CHESTS NOT IMPLEMENTED YET\n");
@@ -563,4 +569,45 @@ int hardFillConsumables(const char *filename, int currID, int size) {
         printf("Warning: Maximum number of consumables reached.\n");
     }
     return currID;
+}
+
+void openXChests(int X, int *weaponCount, int *consumableCount, int *matCount, int weaponsNB, int consumablesNB) {
+    for (int i = 0; i < X; i++) {
+        int weaponIndex, consumableIndex, matIndex;
+
+        // Open a chest and get the obtained item indexes
+        openChest(0, &weaponIndex, &consumableIndex, &matIndex, weaponsNB, consumablesNB);
+        weaponCount[weaponIndex]++;
+        consumableCount[consumableIndex]++;
+        matCount[matIndex]++;
+    }
+}
+
+void chestToCSV(int *weaponCount, int weaponsNB, int *consumableCount, int consumablesNB, int *matCount) {
+    FILE *file = fopen("loot_results.csv", "w");
+    if (!file) {
+        printf("Error: Cannot open file for writing.\n");
+        return;
+    }
+
+    // Write header
+    fprintf(file, "Rarity,Item,Times Obtained\n");
+
+    // Write weapons data
+    for (int i = 0; i < weaponsNB; i++) {
+        fprintf(file, "%s,%s,%d\n", rarityDic(weapons[i].rarity), weapons[i].name, weaponCount[i]);
+    }
+
+    // Write consumables data
+    for (int i = 0; i < consumablesNB; i++) {
+        fprintf(file, "%s,%s,%d\n", rarityDic(consumables[i].rarity), consumables[i].name, consumableCount[i]);
+    }
+
+    // Write materials data
+    fprintf(file, "Wood,Material,%d\n", matCount[0]);
+    fprintf(file, "Brick,Material,%d\n", matCount[1]);
+    fprintf(file, "Metal,Material,%d\n", matCount[2]);
+
+    fclose(file);
+    printf("Loot results saved to loot_results.csv\n");
 }
