@@ -1,1 +1,11 @@
-medkit 10 2 1
+"Bandages" 20 0 5
+"Medkit" 5 2 1
+"Small Shield Potion" 12 1 3
+"Shield Potion" 10 2 1
+"Slurp Juice" 2 3 1
+"Chug Jug" 0.75 4 1
+"Boogie Bomb" 5 2 1
+"Smoke Grenade" 5 1 5
+"Grenade" 15 0 3
+"Impulse Grenade" 5 2 3
+"Bush" 1 4 1

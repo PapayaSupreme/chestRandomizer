@@ -1,1 +1,42 @@
-scar 0.0554 4 1
+"Pump Shotgun" 8 0 0
+"Pump Shotgun" 6 1 0
+"Pump Shotgun" 4 2 0
+"Tactical Shotgun" 8 1 0
+"Tactical Shotgun" 4 2 0
+"Tactical Shotgun" 2 3 0
+"Assault Rifle" 15 0 1
+"Assault Rifle" 12 1 1
+"Assault Rifle" 5 2 1
+"Scar" 2 3 1
+"Scar" 0.75 4 1
+"Burst Assault Rifle" 10 0 1
+"Burst Assault Rifle" 8 1 1
+"Burst Assault Rifle" 4 2 1
+"Scoped Assault Rifle" 5 2 1
+"Scoped Assault Rifle" 2 3 1
+"Submachine Gun" 12 0 2
+"Submachine Gun" 10 1 2
+"Submachine Gun" 5 2 2
+"Silenced SMG" 10 0 2
+"Silenced SMG" 8 1 2
+"Silenced SMG" 5 2 2
+"Tactical SMG" 8 1 2
+"Tactical SMG" 4 2 2
+"Tactical SMG" 2 3 2
+"Bolt-Action Sniper Rifle" 4 2 3
+"Bolt-Action Sniper Rifle" 2 3 3
+"Bolt-Action Sniper Rifle" 0.75 4 3
+"Semi-Auto Sniper Rifle" 5 2 3
+"Semi-Auto Sniper Rifle" 2 3 3
+"Revolver" 8 0 4
+"Revolver" 6 1 4
+"Revolver" 5 2 4
+"Pistol" 15 0 4
+"Pistol" 12 1 4
+"Pistol" 5 2 4
+"Rocket Launcher" 5 2 5
+"Rocket Launcher" 2 3 5
+"Rocket Launcher" 0.75 4 5
+"Grenade Launcher" 5 2 5
+"Grenade Launcher" 2 3 5
+"Grenade Launcher" 0.75 4 5

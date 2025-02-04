@@ -82,10 +82,9 @@ int main(void) {
                             printf("Current weapons file : %s\n", filenameW);
                             printf("Current consumables file : %s\n", filenameC);
                             printf("====================================\n");
-                            printf("[W] Change weapons filename\n"
-                                   "[H] Hardfill weapons from current file\n"
+                            printf("[H] Hardfill from selected files\n"
+                                   "[W] Change weapons filename\n"
                                    "[C] Change consumables filename\n"
-                                   "[I] Hardfill consumables from current file\n"
                                    "[F] Return to the settings menu\n");
                             printf("====================================\n");
                             char input4[5];
@@ -94,8 +93,8 @@ int main(void) {
                             if (strcmp(input4, "W") == 0 || strcmp(input4, "w") == 0) {
                                 printf("Put the text file in the same directory.\n"
                                "Syntax is as follows:\n"
-                               "Name Dropchance Rarity Type\n"
-                               "Scar-L 0.05 4 1\n"
+                               "\"Name\" Dropchance Rarity Type\n"
+                               "\"Scar L\" 0.05 4 1\n"
                                "Rarities : 0 - Common, 1 - Uncommon, 2 - Rare, 3 - Epic, 4 - Legendary\n"
                                "Types : 0 - Shotgun, 1 - AR, 2 - SMG, 3 - Sniper, 4 - Pistol, 5 - Explosive\n");
                                 printf("\nWhat is the name of the file ?\n");
@@ -103,31 +102,31 @@ int main(void) {
                                 filenameW[strcspn(filenameW, "\n")] = '\0';
                                 strcat(filenameW, ".txt");
                             } else if (strcmp(input4, "H") == 0 || strcmp(input4, "h") == 0) {
-                                temp = currID;
-                                currID = hardFillWeapons(filenameW, currID, weaponsNB);
-                                if (currID == temp) {
-                                    printf("NOTE : No weapons were added. Check your in-file syntax.\n");
-                                }else {
+                                printf("DO you want to hardfill weapons or consumables ? W/C\n");
+                                char input5[5];
+                                fgets(input5, sizeof(input5), stdin);
+                                input5[strcspn(input5, "\n")] = '\0';
+                                if (strcmp(input5, "W") == 0 || strcmp(input5, "w") == 0) {
+                                    temp = currID;
+                                    currID = hardFillWeapons(filenameW, currID, weaponsNB);
                                     weaponsNB += currID - temp;
+                                } else if (strcmp(input5, "C") == 0 || strcmp(input5, "c") == 0) {
+                                    temp = currID;
+                                    currID = hardFillConsumables(filenameC, currID, consumablesNB);
+                                    consumablesNB += currID - temp;
+                                } else {
+                                    printf("Invalid entry, please try again.\n");
                                 }
                             } else if (strcmp(input4, "C") == 0 || strcmp(input4, "c") == 0) {
                                 printf("Put the text file in the same directory.\n"
                                "Syntax is as follows:\n"
-                               "Name Dropchance Rarity Quantity\n"
-                               "Medkit 10 2 1\n"
+                               "\"Name\" Dropchance Rarity Quantity\n"
+                               "\"Medkit\" 10 2 1\n"
                                "Rarities : 0 - Common, 1 - Uncommon, 2 - Rare, 3 - Epic, 4 - Legendary\n");
                                 printf("\nWhat is the name of the file ?\n");
                                 fgets(filenameC, sizeof(filenameC), stdin);
                                 filenameC[strcspn(filenameC, "\n")] = '\0';
                                 strcat(filenameC, ".txt");
-                            } else if (strcmp(input4, "I") == 0 || strcmp(input4, "i") == 0) {
-                                temp = currID;
-                                currID = hardFillConsumables(filenameC, currID, consumablesNB);
-                                if (currID == temp) {
-                                    printf("NOTE : No consumables were added. Check your in-file syntax.\n");
-                                }else {
-                                    consumablesNB += currID - temp;
-                                }
                             }else if (strcmp(input4, "F") == 0 || strcmp(input4, "f") == 0) {
                                 printf("Returning to settings menu.\n");
                                 exitH = 1;
@@ -140,11 +139,13 @@ int main(void) {
                         currID = consumableCreationFoolproof(consumablesNB, currID);
                         consumablesNB++;
                     } else if (strcmp(input2, "S") == 0 || strcmp(input2, "s") == 0) {
-                        printf("Displaying weapons.\n\n");
+                        printf("Displaying items.\n\n");
+                        printf("\n===================================\n");
+                        printf("             ITEMS LIST            \n");
+                        printf("===================================\n");
                         displayWeapons(weaponsNB);
-                    } else if (strcmp(input2, "M") == 0 || strcmp(input2, "m") == 0) {
-                        printf("Displaying consumables.\n\n");
                         displayConsumables(consumablesNB);
+                        printf("You currently have %d weapons and %d consumables.\n", weaponsNB, consumablesNB);
                     } else if (strcmp(input2, "R") == 0 || strcmp(input2, "r") == 0) {
                         printf("Removing an item.\n");
                         printf("Would you like to delete a weapon or a consumable ? W/C\n");

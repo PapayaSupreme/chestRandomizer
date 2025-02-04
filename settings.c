@@ -38,8 +38,7 @@ void displaySettingsMenu() {
     printf("  [W] Add a weapon\n");
     printf("  [C] Add a consumable\n");
     printf("  [H] Hard fill items\n");
-    printf("  [S] See added weapons\n");
-    printf("  [M] See added consumables\n");
+    printf("  [S] See added items\n");
     printf("  [R] Remove an item\n");
     printf("  [F] Return to Main Menu\n");
     printf("====================================\n");
@@ -316,9 +315,6 @@ void displayWeapons(int size) {
     if (size == 0) {
         printf("No weapons have been added yet.\n\n");
     } else {
-        printf("\n===================================\n");
-        printf("           WEAPONS   LIST          \n");
-        printf("===================================\n");
         int totalDropChance = 0;
         for (int i = 0; i < size; i++) {
             totalDropChance += weapons[i].dropchance;
@@ -332,7 +328,6 @@ void displayWeapons(int size) {
                    rarityDic(weapons[i].rarity), typeDic(weapons[i].type), weapons[i].id);
         }
         printf("\n===================================\n");
-        printf("You currently have %d weapons.\n\n", size);
         if (totalDropChance != 10000) {
             printf("Note : Total drop chance is %.2f%%.\nThe drop chances will be used as coefficients to ensure a fair lootpool.\n\n", (float)totalDropChance/100);
         } else {
@@ -345,8 +340,6 @@ void displayConsumables(int size) {
     if (size == 0) {
         printf("No consumables have been added yet.\n\n");
     } else {
-        printf("\n===================================\n");
-        printf("         CONSUMABLES LIST          \n");
         printf("===================================\n");
         int totalDropChance = 0;
         for (int i = 0; i < size; i++) {
@@ -361,7 +354,6 @@ void displayConsumables(int size) {
                    rarityDic(consumables[i].rarity), consumables[i].quantity, consumables[i].id);
         }
         printf("\n===================================\n");
-        printf("You currently have %d consumables.\n\n", size);
         if (totalDropChance != 10000) {
             printf("Note : Total drop chance is %.2f%%.\nThe drop chances will be used as coefficients to ensure a fair lootpool.\n\n", (float)totalDropChance/100);
         } else {
@@ -385,12 +377,12 @@ int deleteItem(int type, int size) {
         for (int i = 0; i < size; i++) {
             if (type == 0) {
                 printf("Weapon %d:\n"
-                       "\tName: %s\n"
-                       "\tID: %d\n", i+1, weapons[i].name, weapons[i].id);
+                       "\tName: %s %s\n"
+                       "\tID: %d\n", i+1, rarityDic(weapons[i].rarity), weapons[i].name, weapons[i].id);
             } else {
                 printf("Consumable %d:\n"
-                       "\tName: %s\n"
-                       "\tID: %d\n", i+1, consumables[i].name, consumables[i].id);
+                       "\tName: %s %s\n"
+                       "\tID: %d\n", i+1, rarityDic(consumables[i].rarity), consumables[i].name, consumables[i].id);
             }
         }
         printf("===================================\n");
@@ -510,22 +502,28 @@ int hardFillWeapons(const char *filename, int currID, int size) {
     }
     int weaponsNB = 0;
     float dropchancetemp;
-    char name[30];
-    while (weaponsNB < MAX_WEAPONS &&
-           fscanf(file, "%29s %f %d %d",
-                  name,
-                  &dropchancetemp,
-                  &weapons[size + weaponsNB].rarity,
-                  &weapons[size + weaponsNB].type) == 4) {
-        weapons[size + weaponsNB].dropchance = dropchancetemp * 100;            //MAYBE DO IT IN TH WHILE DIRECTLY TODO
-        weapons[size + weaponsNB].id = currID;
-        strcpy(weapons[size + weaponsNB].name, name);
-        currID++;
-        weaponsNB++;
-                  }
+    char line[100];
+    while (weaponsNB < MAX_WEAPONS && fgets(line, sizeof(line), file)) {
+        if (sscanf(line, "\"%[^\"]\" %f %d %d",
+                   weapons[size + weaponsNB].name,
+                   &dropchancetemp,
+                   &weapons[size + weaponsNB].rarity,
+                   &weapons[size + weaponsNB].type) == 4) {
+            weapons[size + weaponsNB].dropchance = dropchancetemp * 100;
+            weapons[size + weaponsNB].id = currID;
+            currID++;
+            weaponsNB++;
+                   } else {
+                       printf("ERROR: Line %d is invalid.\n", weaponsNB+1);
+                   }
+    }
     fclose(file);
-    printf("Loaded %d weapons from %s\n", weaponsNB, filename);
-    if  (weaponsNB == MAX_WEAPONS) {
+    if (weaponsNB!=0){
+        printf("Loaded %d weapons from %s\n", weaponsNB, filename);
+    }else {
+        printf("No weapons were loaded from %s\n", filename);
+    }
+    if (weaponsNB == MAX_WEAPONS) {
         printf("Warning: Maximum number of weapons reached.\n");
     }
     return currID;
@@ -540,21 +538,27 @@ int hardFillConsumables(const char *filename, int currID, int size) {
     }
     int consumablesNB = 0;
     float dropchancetemp;
-    char name[30];
-    while (consumablesNB < MAX_CONSUMABLES &&
-           fscanf(file, "%29s %f %d %d",
-                  name,
-                  &dropchancetemp,
-                  &consumables[size + consumablesNB].rarity,
-                  &consumables[size + consumablesNB].quantity) == 4) {
-        consumables[size + consumablesNB].dropchance = dropchancetemp * 100;
-        consumables[size + consumablesNB].id = currID;
-        strcpy(consumables[size + consumablesNB].name, name);
-        currID++;
-        consumablesNB++;
+    char line[100];
+    while (consumablesNB < MAX_CONSUMABLES && fgets(line, sizeof(line), file)) {
+        if (sscanf(line, "\"%[^\"]\" %f %d %d",
+                   consumables[size + consumablesNB].name,
+                   &dropchancetemp,
+                   &consumables[size + consumablesNB].rarity,
+                   &consumables[size + consumablesNB].quantity) == 4) {
+            consumables[size + consumablesNB].dropchance = dropchancetemp * 100;
+            consumables[size + consumablesNB].id = currID;
+            currID++;
+            consumablesNB++;
+        } else {
+            printf("ERROR: Line %d is invalid.\n", consumablesNB+1);
+        }
     }
     fclose(file);
-    printf("Loaded %d consumables from %s\n", consumablesNB, filename);
+    if (consumablesNB!=0){
+        printf("Loaded %d consumables from %s\n", consumablesNB, filename);
+    }else {
+        printf("No consumables were loaded from %s\n", filename);
+    }
     if  (consumablesNB == MAX_CONSUMABLES) {
         printf("Warning: Maximum number of consumables reached.\n");
     }
