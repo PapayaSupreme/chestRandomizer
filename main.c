@@ -38,6 +38,9 @@ int main(void) {
             if (strcmp(input, "E") == 0 || strcmp(input, "e") == 0) {
                 printf("Opening Chests Menu...\n");
                 int exitC = 0;
+                int *weaponDrops = malloc(weaponsNB * sizeof(int));
+                int *consumableDrops = malloc(consumablesNB * sizeof(int));
+                computeDropChances(weaponDrops, consumableDrops, weaponsNB, consumablesNB);
                 if (weaponsNB == 0 || consumablesNB == 0) {
                     printf("You need to add at least one weapon and one consumable to open chests.\n");
                     exitC = 1;
@@ -48,7 +51,7 @@ int main(void) {
                     fgets(input2, sizeof(input2), stdin);
                     input2[strcspn(input2, "\n")] = '\0';
                     if (strcmp(input2, "E") == 0 || strcmp(input2, "e") == 0) {
-                        openChest(0, &weaponsIndex, &consumablesIndex, &matsIndex, weaponsNB, consumablesNB);
+                        openChest(0, &weaponsIndex, &consumablesIndex, &matsIndex, weaponsNB, consumablesNB, weaponDrops, consumableDrops);
                         printf("You obtained the following items:\n");
                         printf("Weapon: %s %s\n", rarityDic(weapons[weaponsIndex].rarity), weapons[weaponsIndex].name);
                         printf("Consumable: %d %s\n",consumables[consumablesIndex].quantity, consumables[consumablesIndex].name);
@@ -81,8 +84,8 @@ int main(void) {
                                 printf("Weapon not found.\n");
                             } else {
                                 printf("Opening chests until you get the desired weapon...\n");
-                                int tries = openChestUntil(0, &index, &weaponsIndex, &consumablesIndex, &matsIndex, weaponsNB, consumablesNB);
-                                printf("First %s %s found in chest %d.\n", rarityDic(weapons[index].rarity), weapons[index].name, tries);
+                                int tries = openChestUntil(0, &index, &weaponsIndex, &consumablesIndex, &matsIndex, weaponsNB, consumablesNB, weaponDrops, consumableDrops);
+                                printf("First %s %s found in chest %d.\n", rarityDic(weapons[index].rarity), weapons[index].name, tries);//TODO DONT PUT WEAPON AND CONS IF ONLY ONE USED
                             }
                         } else if (strcmp(WorC, "C") == 0 || strcmp(WorC, "c") == 0) {
                             printf("Enter the ID of the consumable you are looking for.\n");
@@ -99,7 +102,7 @@ int main(void) {
                                 printf("Consumable not found.\n");
                             } else {
                                 printf("Opening chests until you get the desired consumable...\n");
-                                int tries = openChestUntil(0, &index, &weaponsIndex, &consumablesIndex, &matsIndex, weaponsNB, consumablesNB);
+                                int tries = openChestUntil(0, &index, &weaponsIndex, &consumablesIndex, &matsIndex, weaponsNB, consumablesNB, weaponDrops, consumableDrops);
                                 printf("First %s found in chest %d.\n", consumables[index].name, tries);
                             }
                         } else {
@@ -117,16 +120,16 @@ int main(void) {
                                 printf("Wrong input. Try again and enter a number.\n");
                             }
                         } else {
-                            int weaponCount[weaponsNB];
-                            int consumableCount[consumablesNB];
-                            int matCount[3] = {0};
+                            unsigned int weaponCount[weaponsNB];
+                            unsigned int consumableCount[consumablesNB];
+                            unsigned int matCount[3] = {0};
                             memset(weaponCount, 0, sizeof(weaponCount));
                             memset(consumableCount, 0, sizeof(consumableCount));
                             memset(matCount, 0, sizeof(matCount));
                             const unsigned int X = atoi(input3);
                             printf("Opening %d chests.\n", X);
                             int printitallhere = 0;
-                            openXChests(X, weaponCount, consumableCount, matCount, weaponsNB, consumablesNB);
+                            openXChests(X, weaponCount, consumableCount, matCount, weaponsNB, consumablesNB, weaponDrops, consumableDrops);
                             if (X>=10) {
                                 printf("That's a lot of loot ! Would you like a CSV data file ? Y/N\n");
                                 char input4[5];
@@ -162,6 +165,8 @@ int main(void) {
                         printf("Invalid input. Please try again.\n");
                     }
                 }
+                free(weaponDrops);
+                free(consumableDrops);
             } else if (strcmp(input, "S") == 0 || strcmp(input, "s") == 0) {
                 int exitS = 0;
                 printf("Opening Settings...\n\n");

@@ -143,7 +143,9 @@ int deleteItem(const int type, int size);
  *
  * @return the index of the item
  */
-int findIndexWithID(const int WorC, const int id, const int size); //TODO NOT EFFICIENT
+int findIndexWithID(const int WorC, const int id, const int size);
+
+int findIndexWithName(const int WorC, const char name[], const int size); //NOT DONE YET
 
 /**
  * @brief Finds the value in the itemDrops array
@@ -190,11 +192,13 @@ int hardFillWeapons(const char *filename, int currID, int size);
  * @param matsIndex to store the index of the mats obtained
  * @param weaponsNB number of weapons
  * @param consumablesNB number of consumables
+ * @param weaponDrops array of weapon drop chances
+ * @param consumableDrops array of consumable drop chances
  *
  * @note The 3 pointers values will be modified
  */
 int openChestUntil(const int WorC, const int *index, int *weaponsIndex, int *consumablesIndex, int *matsIndex, const int weaponsNB, const
-                   int consumablesNB);
+                   int consumablesNB, const int *weaponDrops, const int *consumableDrops);
 
 /**
  * @brief Creates a weapon
@@ -249,11 +253,23 @@ void clearInputBuffer();
  * @param matsIndex to store the index of the mats obtained
  * @param weaponsNB number of weapons
  * @param consumablesNB number of consumables
+ * @param weaponDrops
+ * @param consumableDrops
  *
  * @note The 3 pointers values will be modified
  */
 void openChest(const int rarity, int *weaponsIndex, int *consumablesIndex, int *matsIndex, const int weaponsNB, const int
-               consumablesNB);
+               consumablesNB, const int *weaponDrops, const int *consumableDrops);
+
+/**
+ * @brief Compute a list of drop chance for each item
+ *
+ * @param weaponDrops array of weapon drop chances
+ * @param consumableDrops array of consumable drop chances
+ * @param weaponsNB number of weapons
+ * @param consumablesNB number of consumables
+ */
+void computeDropChances(int *weaponDrops, int *consumableDrops, const int weaponsNB, const int consumablesNB);
 
 /**
  * @brief Opens 1000 chests and keeps track of stats
@@ -264,11 +280,13 @@ void openChest(const int rarity, int *weaponsIndex, int *consumablesIndex, int *
  * @param matsCount to store the index of the mats obtained
  * @param weaponsNB number of weapons
  * @param consumablesNB number of consumables
+ * @param weaponDrops array of weapon drop chances
+ * @param consumableDrops array of consumable drop chances
  *
  * @note The 3 pointers values will be modified
  */
-void openXChests(const int X, int *weaponsCount, int *consumablesCount, int *matsCount, const int weaponsNB, const int
-                 consumablesNB);
+void openXChests(const int X, unsigned int *weaponsCount, unsigned int *consumablesCount, unsigned int *matsCount, const int weaponsNB, const int
+                 consumablesNB, const int *weaponDrops, const int *consumableDrops);
 
 
 #endif //SETTINGS_H

@@ -463,35 +463,22 @@ int deleteItem(const int type, int size) {
 }
 
 void openChest(const int rarity, int *weaponsIndex, int *consumablesIndex, int *matsIndex, const int weaponsNB, const int
-               consumablesNB) {
+               consumablesNB, const int *weaponDrops, const int *consumableDrops) {
     if (rarity == 0) {
         //chest will drop one weapon, one consumable and one mat
-        int *weaponDrops = malloc(weaponsNB * sizeof(int));
-        int *consumableDrops = malloc(consumablesNB * sizeof(int));
-        weaponDrops[0] = weapons[0].dropchance;
-        for (int i = 1;i<weaponsNB;i++) {
-            weaponDrops[i] = weaponDrops[i-1]+weapons[i].dropchance;
-        }
-        consumableDrops[0] = consumables[0].dropchance;
-        for (int i = 1;i<consumablesNB;i++) {
-            consumableDrops[i] = consumableDrops[i-1]+consumables[i].dropchance;
-        }
         int weaponDrop, consumableDrop;
-        if (weaponDrops[weaponsNB-1] <= 10000 && consumableDrops[consumablesNB-1] <= 10000) {
+        if (weaponDrops[weaponsNB-1] <= 30000 && consumableDrops[consumablesNB-1] <= 30000) {
             weaponDrop = (int)((double)rand() / (RAND_MAX + 1.0) * weaponDrops[weaponsNB - 1]) + 1;
             consumableDrop = (int)((double)rand() / (RAND_MAX + 1.0) * consumableDrops[consumablesNB - 1]) + 1;
         } else {
-            double randNumberW = ((rand() << 15) | rand()) / (double)(1 << 30);
+            const double randNumberW = ((rand() << 15) | rand()) / (double)(1 << 30);
             weaponDrop = 1 + (int)(randNumberW * weaponDrops[weaponsNB - 1]);
-            double randNumberC = ((rand() << 15) | rand()) / (double)(1 << 30);
+            const double randNumberC = ((rand() << 15) | rand()) / (double)(1 << 30);
             consumableDrop = 1 + (int)(randNumberC * consumableDrops[consumablesNB - 1]);
         }
         *weaponsIndex = findValue(weaponDrops, weaponsNB, weaponDrop);
         *consumablesIndex = findValue(consumableDrops, consumablesNB, consumableDrop);
         *matsIndex = (int)((double)rand() / (RAND_MAX + 1.0) * 3);
-        free(weaponDrops);
-        free(consumableDrops);
-
     }
     else {
         printf("RARE CHESTS NOT IMPLEMENTED YET\n");
@@ -511,21 +498,40 @@ int findValue(const int *T, const int itemsNB, const int val) {
 }
 
 int findIndexWithID(const int WorC, const int id, const int size) {
-    if (WorC == 0) {
-        for (int i = 0; i < size; i++) {
-            if (weapons[i].id == id) {
-                return i;
+    int low = 0, high = size - 1;
+
+    // Perform binary search based on WorC value (0 for weapons, 1 for consumables)
+    if (WorC == 0) {  // Searching in weapons array
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+
+            if (weapons[mid].id == id) {
+                return mid;  // ID found at mid index
+            }
+            if (weapons[mid].id < id) {
+                low = mid + 1;  // Search the right half
+            } else {
+                high = mid - 1;  // Search the left half
             }
         }
-    } else {
-        for (int i = 0; i < size; i++) {
-            if (consumables[i].id == id) {
-                return i;
+    } else {  // Searching in consumables array
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+
+            if (consumables[mid].id == id) {
+                return mid;  // ID found at mid index
+            }
+            if (consumables[mid].id < id) {
+                low = mid + 1;  // Search the right half
+            } else {
+                high = mid - 1;  // Search the left half
             }
         }
     }
-    return -1;
+
+    return -1;  // ID not found
 }
+
 int hardFillWeapons(const char *filename, int currID, int size) {
     FILE *file = fopen(filename, "r");
     printf("Opening file: %s\n", filename);
@@ -598,12 +604,12 @@ int hardFillConsumables(const char *filename, int currID, int size) {
     return currID;
 }
 
-void openXChests(const int X, int *weaponsCount, int *consumablesCount, int *matsCount, const int weaponsNB, const int
-                 consumablesNB) {
-    for (int i = 0; i < X; i++) {
-        int weaponIndex, consumableIndex, matIndex;
+void openXChests(const int X, unsigned int *weaponsCount, unsigned int *consumablesCount, unsigned int *matsCount, const int weaponsNB, const int
+                 consumablesNB, const int *weaponDrops, const int *consumableDrops) {
+    int weaponIndex, consumableIndex, matIndex;
+    for (unsigned int i = 0; i < X; i++) {
         // Open a chest and get the obtained item indexes
-        openChest(0, &weaponIndex, &consumableIndex, &matIndex, weaponsNB, consumablesNB);
+        openChest(0, &weaponIndex, &consumableIndex, &matIndex, weaponsNB, consumablesNB, weaponDrops, consumableDrops);
         weaponsCount[weaponIndex]++;
         consumablesCount[consumableIndex]++;
         matsCount[matIndex]++;
@@ -640,13 +646,13 @@ void chestToCSV(const int *weaponCount, const int weaponsNB, const int *consumab
 }
 
 int openChestUntil(const int WorC, const int *index, int *weaponsIndex, int *consumablesIndex, int *matsIndex, const int weaponsNB, const
-                   int consumablesNB) {
+                   int consumablesNB, const int *weaponDrops, const int *consumableDrops) {
     //we open chests until we get the desired item
     int found = 0;
     int tries = 0;
     if (WorC == 0) {
         while (found == 0) {
-            openChest(0, weaponsIndex, consumablesIndex, matsIndex, weaponsNB, consumablesNB);
+            openChest(0, weaponsIndex, consumablesIndex, matsIndex, weaponsNB, consumablesNB, weaponDrops, consumableDrops);
             if (*weaponsIndex == *index) {
                 found = 1;
             }
@@ -654,7 +660,7 @@ int openChestUntil(const int WorC, const int *index, int *weaponsIndex, int *con
         }
     } else {
         while (found == 0) {
-            openChest(0, weaponsIndex, consumablesIndex, matsIndex, weaponsNB, consumablesNB);
+            openChest(0, weaponsIndex, consumablesIndex, matsIndex, weaponsNB, consumablesNB, weaponDrops, consumableDrops);
             if (*consumablesIndex == *index) {
                 found = 1;
             }
@@ -662,4 +668,16 @@ int openChestUntil(const int WorC, const int *index, int *weaponsIndex, int *con
         }
     }
     return tries;
+}
+
+void computeDropChances(int *weaponDrops, int *consumableDrops, const int weaponsNB, const int consumablesNB) {
+    weaponDrops[0] = weapons[0].dropchance;
+    for (int i = 1; i < weaponsNB; i++) {
+        weaponDrops[i] = weaponDrops[i - 1] + weapons[i].dropchance;
+    }
+
+    consumableDrops[0] = consumables[0].dropchance;
+    for (int i = 1; i < consumablesNB; i++) {
+        consumableDrops[i] = consumableDrops[i - 1] + consumables[i].dropchance;
+    }
 }
