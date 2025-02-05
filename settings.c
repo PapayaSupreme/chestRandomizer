@@ -38,7 +38,6 @@ void displaySettingsMenu() {
     printf("  [W] Add a weapon\n");
     printf("  [C] Add a consumable\n");
     printf("  [H] Hard fill items\n");
-    printf("  [S] See added items\n");
     printf("  [R] Remove an item\n");
     printf("  [F] Return to Main Menu\n");
     printf("====================================\n");
@@ -51,10 +50,11 @@ void displayChestMenu(){
     printf("  [E] Open 1 chest\n");
     printf("  [X] Open X chests\n");
     printf("  [A] Open chests UNTIL\n");
+    printf("  [S] See added items\n");
     printf("  [F] Return to Main Menu\n");
 }
 
-void displayHardfillMenu(int weaponsNB, int consumablesNB, const char *filenameW, const char *filenameC) {
+void displayHardfillMenu(const int weaponsNB, const int consumablesNB, const char *filenameW, const char *filenameC) {
     printf("====================================\n");
     printf("There are currently %d weapons and %d consumables.\n\n", weaponsNB, consumablesNB);
     printf("Current weapons file : %s\n", filenameW);
@@ -67,7 +67,7 @@ void displayHardfillMenu(int weaponsNB, int consumablesNB, const char *filenameW
     printf("====================================\n");
 }
 
-const char* rarityDic(int rarity) {
+const char* rarityDic(const int rarity) {
     switch (rarity) {
         case 0:
             return "Common";
@@ -84,7 +84,7 @@ const char* rarityDic(int rarity) {
     }
 }
 
-const char* typeDic(int type) {
+const char* typeDic(const int type) {
     switch (type) {
         case 0:
             return "Shotgun";
@@ -103,7 +103,7 @@ const char* typeDic(int type) {
     }
 }
 
-int weaponCreation(int currsize,int currID, char name[], int type,  int rarity, float dropchance) {
+int weaponCreation(const int currsize, int currID, char name[], const int type, const int rarity, const float dropchance) {
     weapons[currsize].id = currID;
     int dropchanceINT = dropchance * 100;
     weapons[currsize].dropchance = dropchanceINT;
@@ -120,7 +120,8 @@ int weaponCreation(int currsize,int currID, char name[], int type,  int rarity, 
 }
 
 int weaponCreationFoolproof(int currsize, int currID) {
-    int type, rarity;
+    int type = -1;
+    int rarity = -1;
     float dropchance;
     char name[30], rarityUser[30], typeUser[30];
     int validentry = 0;
@@ -132,7 +133,7 @@ int weaponCreationFoolproof(int currsize, int currID) {
             printf("Is the name %s for the weapon correct ? Y/N.\n", name);
             char input4;
             scanf(" %c", &input4);
-            while (getchar() != '\n');
+            while (getchar() != '\n'){}
             if (input4 == 'Y' || input4 == 'y') {
                 validentry = 1;
             } else {
@@ -198,14 +199,14 @@ int weaponCreationFoolproof(int currsize, int currID) {
         printf("Enter the drop chance of the weapon: \n"
                "(from 0.01%% to 100%%)\n");
         scanf("%f", &dropchance);
-        while (getchar() != '\n');
+        while (getchar() != '\n'){}
         if (dropchance < 0.01 || dropchance > 100) {
             printf("Invalid input. Please try again.\n");
         } else {
             printf("Chosen a drop chance of %.2f%%, correct ? Y/N.\n", dropchance);
             char input3;
             scanf("%c", &input3);
-            while (getchar() != '\n');
+            while (getchar() != '\n'){}
             if (input3 == 'Y' || input3 == 'y') {
                 validentry = 1;
             } else {
@@ -216,7 +217,7 @@ int weaponCreationFoolproof(int currsize, int currID) {
     return weaponCreation(currsize, currID, name, type, rarity, dropchance);
 }
 
-int consumableCreation(int currsize, int currID, float dropchance, int number, int rarity, char name[]) {
+int consumableCreation(const int currsize, int currID, const float dropchance, const int number, const int rarity, char name[]) {
     consumables[currsize].id = currID;
     int dropchanceINT = dropchance * 100;
     consumables[currsize].dropchance = dropchanceINT;
@@ -233,7 +234,8 @@ int consumableCreation(int currsize, int currID, float dropchance, int number, i
 }
 
 int consumableCreationFoolproof(int currsize, int currID) {
-    int rarity, number;
+    int rarity = -1;
+    int number;
     float dropchance;
     char name[30], rarityUser[30];
     int validentry = 0;
@@ -245,7 +247,7 @@ int consumableCreationFoolproof(int currsize, int currID) {
             printf("Is the name %s for the consumable correct ? Y/N.\n", name);
             char input4;
             scanf(" %c", &input4);
-            while (getchar() != '\n');
+            while (getchar() != '\n'){}
             if (input4 == 'Y' || input4 == 'y') {
                 validentry = 1;
             } else {
@@ -286,14 +288,14 @@ int consumableCreationFoolproof(int currsize, int currID) {
     while (validentry == 0){
         printf("Quantity the consumable will drop in: ");
         scanf("%d", &number);
-        while (getchar() != '\n');
+        while (getchar() != '\n'){}
         if (number < 1 || number > 100) {
             printf("Out of bounds. Please try again.\n");
         } else {
             printf("Chosen a quantity of %d, correct ? Y/N.\n", number);
             char input3;
             scanf("%c", &input3);
-            while (getchar() != '\n');
+            while (getchar() != '\n'){}
             if (input3 == 'Y' || input3 == 'y') {
                 validentry = 1;
             } else {
@@ -306,14 +308,14 @@ int consumableCreationFoolproof(int currsize, int currID) {
         printf("Enter the drop chance of the consumable: \n"
                "(from 0.01%% to 100%%)\n");
         scanf("%f", &dropchance);
-        while (getchar() != '\n');
+        while (getchar() != '\n'){}
         if (dropchance < 0.01 || dropchance > 100) {
             printf("Invalid input. Please try again.\n");
         } else {
             printf("Chosen a drop chance of %.2f%%, correct ? Y/N.\n", dropchance);
             char input3;
             scanf("%c", &input3);
-            while (getchar() != '\n');
+            while (getchar() != '\n'){}
             if (input3 == 'Y' || input3 == 'y') {
                 validentry = 1;
             } else {
@@ -324,47 +326,42 @@ int consumableCreationFoolproof(int currsize, int currID) {
     return consumableCreation(currsize, currID, dropchance, number, rarity, name);
 }
 
-void displayWeapons(int size) {
-    if (size == 0) {
-        printf("No weapons have been added yet.\n\n");
+void displayItems(const int WorC, const int size) {
+    const char typeUser[16];
+    if (WorC == 0) {
+        strcpy(typeUser, "weapons");
     } else {
-        int totalDropChance = 0;
-        for (int i = 0; i < size; i++) {
-            totalDropChance += weapons[i].dropchance;
-            float dropchanceUser = weapons[i].dropchance/100.0;
-            printf("Weapon %d:\n"
-                   "\tName: %s\n"
-                   "\tDrop chance: %.2f%%\n"
-                   "\tRarity: %s\n"
-                   "\tType: %s\n"
-                   "\tID: %d\n", i+1, weapons[i].name, dropchanceUser,
-                   rarityDic(weapons[i].rarity), typeDic(weapons[i].type), weapons[i].id);
-        }
-        printf("\n===================================\n");
-        if (totalDropChance != 10000) {
-            printf("Note : Total drop chance is %.2f%%.\nThe drop chances will be used as coefficients to ensure a fair lootpool.\n\n", (float)totalDropChance/100);
-        } else {
-            printf("Note : Total drop chance is 100%%, Perfect !\n\n");
-        }
+        strcpy(typeUser, "consumables");
     }
-}
-
-void displayConsumables(int size) {
     if (size == 0) {
-        printf("No consumables have been added yet.\n\n");
+        printf("No %s have been added yet.\n\n", typeUser);
     } else {
         printf("===================================\n");
         int totalDropChance = 0;
-        for (int i = 0; i < size; i++) {
-            totalDropChance += consumables[i].dropchance;
-            float dropchanceUser = consumables[i].dropchance/100.0;
-            printf("Consumable %d:\n"
-                   "\tName: %s\n"
-                   "\tDrop chance: %.2f%%\n"
-                   "\tRarity: %s\n"
-                   "\tQuantity: %d\n"
-                   "\tID: %d\n", i+1, consumables[i].name, dropchanceUser,
-                   rarityDic(consumables[i].rarity), consumables[i].quantity, consumables[i].id);
+        if (WorC == 0) {
+            for (int i = 0; i < size; i++) {
+                totalDropChance += weapons[i].dropchance;
+                float dropchanceUser = weapons[i].dropchance/100.0;
+                printf("Weapon %d:\n"
+                       "\tName: %s\n"
+                       "\tDrop chance: %.2f%%\n"
+                       "\tRarity: %s\n"
+                       "\tType: %s\n"
+                       "\tID: %d\n", i+1, weapons[i].name, dropchanceUser,
+                       rarityDic(weapons[i].rarity), typeDic(weapons[i].type), weapons[i].id);
+            }
+        }else {
+            for (int i = 0; i < size; i++) {
+                totalDropChance += consumables[i].dropchance;
+                float dropchanceUser = consumables[i].dropchance/100.0;
+                printf("Consumable %d:\n"
+                       "\tName: %s\n"
+                       "\tDrop chance: %.2f%%\n"
+                       "\tRarity: %s\n"
+                       "\tQuantity: %d\n"
+                       "\tID: %d\n", i+1, consumables[i].name, dropchanceUser,
+                       rarityDic(consumables[i].rarity), consumables[i].quantity, consumables[i].id);
+            }
         }
         printf("\n===================================\n");
         if (totalDropChance != 10000) {
@@ -375,7 +372,7 @@ void displayConsumables(int size) {
     }
 }
 
-int deleteItem(int type, int size) {
+int deleteItem(const int type, int size) {
     const char *typeUser;
     int exit = 0;
     if (type == 0) {
@@ -418,7 +415,7 @@ int deleteItem(int type, int size) {
                                "ID: %d\n", weapons[i].name, weapons[i].id);
                         char input2;
                         scanf(" %c", &input2);
-                        while (getchar() != '\n');
+                        while (getchar() != '\n'){}
                         if (input2 == 'Y' || input2 == 'y') {
                             for (int j = i; j < size-1; j++) {
                                 weapons[j] = weapons[j+1];
@@ -440,7 +437,7 @@ int deleteItem(int type, int size) {
                                "ID: %d\n", consumables[i].name, consumables[i].id);
                         char input2;
                         scanf(" %c", &input2);
-                        while (getchar() != '\n');
+                        while (getchar() != '\n') {}
                         if (input2 == 'Y' || input2 == 'y') {
                             for (int j = i; j < size-1; j++) {
                                 consumables[j] = consumables[j+1];
@@ -465,7 +462,8 @@ int deleteItem(int type, int size) {
     return size;
 }
 
-void openChest(int rarity, int *weaponsIndex, int *consumablesIndex, int *matsIndex, int weaponsNB, int consumablesNB) {
+void openChest(const int rarity, int *weaponsIndex, int *consumablesIndex, int *matsIndex, const int weaponsNB, const int
+               consumablesNB) {
     if (rarity == 0) {
         //chest will drop one weapon, one consumable and one mat
         int *weaponDrops = malloc(weaponsNB * sizeof(int));
@@ -500,7 +498,7 @@ void openChest(int rarity, int *weaponsIndex, int *consumablesIndex, int *matsIn
     }
 }
 
-int findValue(int *T, int itemsNB, int val) {
+int findValue(const int *T, const int itemsNB, const int val) {
     int left = 0, right = itemsNB - 1;
     while (left < right) {
         int mid = (left + right) / 2;
@@ -512,7 +510,7 @@ int findValue(int *T, int itemsNB, int val) {
     return left;  // The selected weapon index
 }
 
-int findIndexWithID(int WorC, int id, int size) {
+int findIndexWithID(const int WorC, const int id, const int size) {
     if (WorC == 0) {
         for (int i = 0; i < size; i++) {
             if (weapons[i].id == id) {
@@ -600,22 +598,22 @@ int hardFillConsumables(const char *filename, int currID, int size) {
     return currID;
 }
 
-void openXChests(int X, int *weaponCount, int *consumableCount, int *matCount, int weaponsNB, int consumablesNB) {
+void openXChests(const int X, int *weaponsCount, int *consumablesCount, int *matsCount, const int weaponsNB, const int
+                 consumablesNB) {
     for (int i = 0; i < X; i++) {
         int weaponIndex, consumableIndex, matIndex;
-
         // Open a chest and get the obtained item indexes
         openChest(0, &weaponIndex, &consumableIndex, &matIndex, weaponsNB, consumablesNB);
-        weaponCount[weaponIndex]++;
-        consumableCount[consumableIndex]++;
-        matCount[matIndex]++;
+        weaponsCount[weaponIndex]++;
+        consumablesCount[consumableIndex]++;
+        matsCount[matIndex]++;
     }
 }
 
-void chestToCSV(int *weaponCount, int weaponsNB, int *consumableCount, int consumablesNB, int *matCount) {
+void chestToCSV(const int *weaponCount, const int weaponsNB, const int *consumableCount, const int consumablesNB, const int *matCount) {
     FILE *file = fopen("loot_results.csv", "w");
-    if (!file) {
-        printf("Error: Cannot open file for writing.\n");
+    if (file == NULL) {
+        printf("Error: Cannot open file for writing. Maybe the file is already opened ?\n");
         return;
     }
 
@@ -641,7 +639,8 @@ void chestToCSV(int *weaponCount, int weaponsNB, int *consumableCount, int consu
     printf("Loot results saved to loot_results.csv\n");
 }
 
-int openChestUntil(int WorC, int *index, int *weaponsIndex, int *consumablesIndex, int *matsIndex, int weaponsNB, int consumablesNB) {
+int openChestUntil(const int WorC, const int *index, int *weaponsIndex, int *consumablesIndex, int *matsIndex, const int weaponsNB, const
+                   int consumablesNB) {
     //we open chests until we get the desired item
     int found = 0;
     int tries = 0;

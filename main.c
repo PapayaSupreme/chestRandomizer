@@ -8,6 +8,8 @@
 
 int main(void) {
     srand (time(NULL));
+    //declare a global integer that handles error code
+    int error = 0;
     char filenameW[254] = "weapons.txt";
     char filenameC[254] = "consumables.txt";
     int temp;
@@ -24,7 +26,6 @@ int main(void) {
     int weaponsNB = 0;
     int consumablesNB = 0;
     int exit = 0;
-    int rarity = 0;//while rare chests are not implemented, always 0 so common
     int weaponsIndex, consumablesIndex, matsIndex;
     char input[5];
     while (exit == 0){
@@ -47,11 +48,19 @@ int main(void) {
                     fgets(input2, sizeof(input2), stdin);
                     input2[strcspn(input2, "\n")] = '\0';
                     if (strcmp(input2, "E") == 0 || strcmp(input2, "e") == 0) {
-                        openChest(rarity, &weaponsIndex, &consumablesIndex, &matsIndex, weaponsNB, consumablesNB);
+                        openChest(0, &weaponsIndex, &consumablesIndex, &matsIndex, weaponsNB, consumablesNB);
                         printf("You obtained the following items:\n");
                         printf("Weapon: %s %s\n", rarityDic(weapons[weaponsIndex].rarity), weapons[weaponsIndex].name);
                         printf("Consumable: %d %s\n",consumables[consumablesIndex].quantity, consumables[consumablesIndex].name);
                         printf("Material: 30 %s\n", mats[matsIndex].name);
+                    } else if (strcmp(input2, "S") == 0 || strcmp(input2, "s") == 0) {
+                        printf("Displaying items.\n\n");
+                        printf("\n===================================\n");
+                        printf("             ITEMS LIST            \n");
+                        printf("===================================\n");
+                        displayItems(0, weaponsNB);
+                        displayItems(1, consumablesNB);
+                        printf("You currently have %d weapons and %d consumables.\n", weaponsNB, consumablesNB);
                     } else if (strcmp(input2, "A") == 0 || strcmp(input2, "a") == 0) {
                         char WorC[50];
                         printf("Would you like to search for a weapon or a consumable ? W/C\n");
@@ -220,14 +229,6 @@ int main(void) {
                         printf("Creating a consumable.\n");
                         currID = consumableCreationFoolproof(consumablesNB, currID);
                         consumablesNB++;
-                    } else if (strcmp(input2, "S") == 0 || strcmp(input2, "s") == 0) {
-                        printf("Displaying items.\n\n");
-                        printf("\n===================================\n");
-                        printf("             ITEMS LIST            \n");
-                        printf("===================================\n");
-                        displayWeapons(weaponsNB);
-                        displayConsumables(consumablesNB);
-                        printf("You currently have %d weapons and %d consumables.\n", weaponsNB, consumablesNB);
                     } else if (strcmp(input2, "R") == 0 || strcmp(input2, "r") == 0) {
                         printf("Removing an item.\n");
                         printf("Would you like to delete a weapon or a consumable ? W/C\n");
@@ -262,5 +263,5 @@ int main(void) {
             }
         }
     }
-    return 0;
+    return error;
 }
