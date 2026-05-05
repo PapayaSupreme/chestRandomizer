@@ -2,7 +2,7 @@
 // Created by pablo on 2/2/2025.
 //
 
-#include "settings.h"
+#include "functions.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -37,8 +37,8 @@ void displaySettingsMenu() {
     printf("====================================\n");
     printf("  [W] Add a weapon\n");
     printf("  [C] Add a consumable\n");
-    printf("  [H] Hard fill items\n");
-    printf("  [R] Remove an item\n");
+    printf("  [H] Add items from a file\n");
+    printf("  [R] Remove items\n");
     printf("  [F] Return to Main Menu\n");
     printf("====================================\n");
 }
@@ -376,9 +376,9 @@ int deleteItem(const int type, int size) {
     const char *typeUser;
     int exit = 0;
     if (type == 0) {
-        typeUser = "Weapon";
+        typeUser = "weapon";
     } else{
-        typeUser = "Consumable";
+        typeUser = "consumable";
     }
     while (exit == 0 && size > 0) {
         printf("\n===================================\n");
@@ -396,13 +396,43 @@ int deleteItem(const int type, int size) {
             }
         }
         printf("===================================\n");
-        printf("Enter the ID/name of the %s you want to delete.\n"
-               "Enter 0 to return to the settings menu.\n", typeUser);
+        printf("[ID/name] Delete this %s\n"
+               " [A] Delete all the %ss\n"
+               " [F] Return to settings\n", typeUser, typeUser);
+        printf("===================================\n");
         char input[30];
         fgets(input, sizeof(input), stdin);
         input[strcspn(input, "\n")] = '\0';
-        if (strcasecmp(input, "0") == 0) {
+        if (strcasecmp(input, "f") == 0) {
             exit = 1;
+        } else if (strcasecmp(input, "a") == 0){
+            printf("Are you sure you want to delete every %s ? Y/N\n", typeUser);
+            char input2;
+            scanf(" %c", &input2);
+            while (getchar() != '\n'){}
+            if (input2 == 'Y' || input2 == 'y') {
+                if (type == 0) {
+                    for (int i = 0;i<size;i++) {
+                        weapons[i].id = 0;
+                        weapons[i].dropchance = 0;
+                        strcpy(weapons[i].name, "");
+                        weapons[i].rarity = -1;
+                        weapons[i].type = -1;
+                    }
+                } else {
+                    for (int i = 0;i<size;i++) {
+                        consumables[i].id = 0;
+                        consumables[i].dropchance = 0;
+                        strcpy(consumables[i].name, "");
+                        consumables[i].rarity = -1;
+                        consumables[i].quantity = -1;
+                    }
+                }
+                size = 0;
+                printf("All %ss deleted.\n", typeUser);
+            } else {
+                printf("Deletion cancelled.\n");
+            }
         } else {
             int found = 0;
             int i = 0;
@@ -462,27 +492,24 @@ int deleteItem(const int type, int size) {
     return size;
 }
 
-void openChest(const int rarity, int *weaponsIndex, int *consumablesIndex, int *matsIndex, const int weaponsNB, const int
+void openChest(int *weaponsIndex, int *consumablesIndex, int *matsIndex, const int weaponsNB, const int
                consumablesNB, const int *weaponDrops, const int *consumableDrops) {
-    if (rarity == 0) {
-        //chest will drop one weapon, one consumable and one mat
-        int weaponDrop, consumableDrop;
-        if (weaponDrops[weaponsNB-1] <= 30000 && consumableDrops[consumablesNB-1] <= 30000) {
-            weaponDrop = (int)((double)rand() / (RAND_MAX + 1.0) * weaponDrops[weaponsNB - 1]) + 1;
-            consumableDrop = (int)((double)rand() / (RAND_MAX + 1.0) * consumableDrops[consumablesNB - 1]) + 1;
-        } else {
-            const double randNumberW = ((rand() << 15) | rand()) / (double)(1 << 30);
-            weaponDrop = 1 + (int)(randNumberW * weaponDrops[weaponsNB - 1]);
-            const double randNumberC = ((rand() << 15) | rand()) / (double)(1 << 30);
-            consumableDrop = 1 + (int)(randNumberC * consumableDrops[consumablesNB - 1]);
-        }
-        *weaponsIndex = findValue(weaponDrops, weaponsNB, weaponDrop);
-        *consumablesIndex = findValue(consumableDrops, consumablesNB, consumableDrop);
-        *matsIndex = (int)((double)rand() / (RAND_MAX + 1.0) * 3);
+    //chest will drop one weapon, one consumable and one mat
+    int weaponDrop, consumableDrop;
+    const int lastIndexSizeW = weaponDrops[weaponsNB-1];
+    const int lastIndexSizeC = consumableDrops[consumablesNB-1];
+    if (lastIndexSizeW <= 30000 && lastIndexSizeC <= 30000) {
+        weaponDrop = (int)((double)rand() / (RAND_MAX + 1.0) * lastIndexSizeW) + 1;
+        consumableDrop = (int)((double)rand() / (RAND_MAX + 1.0) * lastIndexSizeC) + 1;
+    } else {
+        const double randNumberW = ((rand() << 15) | rand()) / (double)(1 << 30);
+        weaponDrop = 1 + (int)(randNumberW * lastIndexSizeW);
+        const double randNumberC = ((rand() << 15) | rand()) / (double)(1 << 30);
+        consumableDrop = 1 + (int)(randNumberC * lastIndexSizeC);
     }
-    else {
-        printf("RARE CHESTS NOT IMPLEMENTED YET\n");
-    }
+    *weaponsIndex = findValue(weaponDrops, weaponsNB, weaponDrop);
+    *consumablesIndex = findValue(consumableDrops, consumablesNB, consumableDrop);
+    *matsIndex = (int)((double)rand() / (RAND_MAX + 1.0) * 3);
 }
 
 int findValue(const int *T, const int itemsNB, const int val) {
@@ -604,12 +631,12 @@ int hardFillConsumables(const char *filename, int currID, int size) {
     return currID;
 }
 
-void openXChests(const int X, unsigned int *weaponsCount, unsigned int *consumablesCount, unsigned int *matsCount, const int weaponsNB, const int
+void openXChests(const long X, unsigned int *weaponsCount, unsigned int *consumablesCount, unsigned int *matsCount, const int weaponsNB, const int
                  consumablesNB, const int *weaponDrops, const int *consumableDrops) {
     int weaponIndex, consumableIndex, matIndex;
-    for (unsigned int i = 0; i < X; i++) {
+    for (long i = 0; i < X; i++) {
         // Open a chest and get the obtained item indexes
-        openChest(0, &weaponIndex, &consumableIndex, &matIndex, weaponsNB, consumablesNB, weaponDrops, consumableDrops);
+        openChest(&weaponIndex, &consumableIndex, &matIndex, weaponsNB, consumablesNB, weaponDrops, consumableDrops);
         weaponsCount[weaponIndex]++;
         consumablesCount[consumableIndex]++;
         matsCount[matIndex]++;
@@ -637,9 +664,9 @@ void chestToCSV(const int *weaponCount, const int weaponsNB, const int *consumab
     }
 
     // Write materials data
-    fprintf(file, "Wood,Material,%d\n", matCount[0]);
-    fprintf(file, "Brick,Material,%d\n", matCount[1]);
-    fprintf(file, "Metal,Material,%d\n", matCount[2]);
+    fprintf(file, "Material,Wood,%d\n", matCount[0]);
+    fprintf(file, "Material,Brick,%d\n", matCount[1]);
+    fprintf(file, "Material,Metal,%d\n", matCount[2]);
 
     fclose(file);
     printf("Loot results saved to loot_results.csv\n");
@@ -652,7 +679,7 @@ int openChestUntil(const int WorC, const int *index, int *weaponsIndex, int *con
     int tries = 0;
     if (WorC == 0) {
         while (found == 0) {
-            openChest(0, weaponsIndex, consumablesIndex, matsIndex, weaponsNB, consumablesNB, weaponDrops, consumableDrops);
+            openChest(weaponsIndex, consumablesIndex, matsIndex, weaponsNB, consumablesNB, weaponDrops, consumableDrops);
             if (*weaponsIndex == *index) {
                 found = 1;
             }
@@ -660,7 +687,7 @@ int openChestUntil(const int WorC, const int *index, int *weaponsIndex, int *con
         }
     } else {
         while (found == 0) {
-            openChest(0, weaponsIndex, consumablesIndex, matsIndex, weaponsNB, consumablesNB, weaponDrops, consumableDrops);
+            openChest(weaponsIndex, consumablesIndex, matsIndex, weaponsNB, consumablesNB, weaponDrops, consumableDrops);
             if (*consumablesIndex == *index) {
                 found = 1;
             }

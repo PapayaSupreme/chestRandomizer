@@ -1,57 +1,57 @@
 Rarity,Item,Times Obtained
-Common,Pump Shotgun,332860
-Uncommon,Pump Shotgun,249551
-Rare,Pump Shotgun,166722
-Uncommon,Tactical Shotgun,333991
-Rare,Tactical Shotgun,166378
-Epic,Tactical Shotgun,84077
-Common,Assault Rifle,624772
-Uncommon,Assault Rifle,499726
-Rare,Assault Rifle,208413
-Epic,Scar,83458
-Legendary,Scar,31035
-Common,Burst Assault Rifle,415994
-Uncommon,Burst Assault Rifle,333645
-Rare,Burst Assault Rifle,166281
-Rare,Scoped Assault Rifle,208266
-Epic,Scoped Assault Rifle,83869
-Common,Submachine Gun,499311
-Uncommon,Submachine Gun,417455
-Rare,Submachine Gun,207612
-Common,Silenced SMG,417047
-Uncommon,Silenced SMG,332769
-Rare,Silenced SMG,208032
-Uncommon,Tactical SMG,334360
-Rare,Tactical SMG,166494
-Epic,Tactical SMG,83281
-Rare,Bolt-Action Sniper Rifle,166943
-Epic,Bolt-Action Sniper Rifle,82838
-Legendary,Bolt-Action Sniper Rifle,31425
-Rare,Semi-Auto Sniper Rifle,208632
-Epic,Semi-Auto Sniper Rifle,83227
-Common,Revolver,334030
-Uncommon,Revolver,250099
-Rare,Revolver,208441
-Common,Pistol,624717
-Uncommon,Pistol,500419
-Rare,Pistol,208004
-Rare,Rocket Launcher,208893
-Epic,Rocket Launcher,83595
-Legendary,Rocket Launcher,31177
-Rare,Grenade Launcher,207583
-Epic,Grenade Launcher,83693
-Legendary,Grenade Launcher,30885
-Common,Bandages,2476552
-Rare,Medkit,618778
-Uncommon,Small Shield Potion,1485851
-Rare,Shield Potion,1238109
-Epic,Slurp Juice,248774
-Legendary,Chug Jug,92976
-Rare,Boogie Bomb,618462
-Uncommon,Smoke Grenade,619224
-Common,Grenade,1859316
-Rare,Impulse Grenade,618706
-Legendary,Bush,123252
-Wood,Material,3334612
-Brick,Material,3332495
-Metal,Material,3332893
+Common,Pump Shotgun,334
+Uncommon,Pump Shotgun,243
+Rare,Pump Shotgun,184
+Uncommon,Tactical Shotgun,330
+Rare,Tactical Shotgun,163
+Epic,Tactical Shotgun,71
+Common,Assault Rifle,630
+Uncommon,Assault Rifle,524
+Rare,Assault Rifle,191
+Epic,Scar,72
+Legendary,Scar,32
+Common,Burst Assault Rifle,428
+Uncommon,Burst Assault Rifle,328
+Rare,Burst Assault Rifle,172
+Rare,Scoped Assault Rifle,188
+Epic,Scoped Assault Rifle,84
+Common,Submachine Gun,503
+Uncommon,Submachine Gun,414
+Rare,Submachine Gun,219
+Common,Silenced SMG,380
+Uncommon,Silenced SMG,337
+Rare,Silenced SMG,183
+Uncommon,Tactical SMG,355
+Rare,Tactical SMG,156
+Epic,Tactical SMG,80
+Rare,Bolt-Action Sniper Rifle,184
+Epic,Bolt-Action Sniper Rifle,78
+Legendary,Bolt-Action Sniper Rifle,26
+Rare,Semi-Auto Sniper Rifle,201
+Epic,Semi-Auto Sniper Rifle,90
+Common,Revolver,330
+Uncommon,Revolver,265
+Rare,Revolver,225
+Common,Pistol,637
+Uncommon,Pistol,532
+Rare,Pistol,219
+Rare,Rocket Launcher,196
+Epic,Rocket Launcher,75
+Legendary,Rocket Launcher,42
+Rare,Grenade Launcher,196
+Epic,Grenade Launcher,70
+Legendary,Grenade Launcher,33
+Common,Bandages,2455
+Rare,Medkit,631
+Uncommon,Small Shield Potion,1497
+Rare,Shield Potion,1255
+Epic,Slurp Juice,247
+Legendary,Chug Jug,101
+Rare,Boogie Bomb,593
+Uncommon,Smoke Grenade,583
+Common,Grenade,1848
+Rare,Impulse Grenade,652
+Legendary,Bush,138
+Material,Wood,3302
+Material,Brick,3374
+Material,Metal,3324

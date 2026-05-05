@@ -4,5 +4,7 @@ project(chestRandomizer C)
 set(CMAKE_C_STANDARD 11)
 
 add_executable(chestRandomizer main.c
-        settings.c
-        settings.h)
+        functions.c
+        functions.h)
+
+
